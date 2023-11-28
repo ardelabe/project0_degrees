@@ -3,6 +3,8 @@ class Node():
         self.state = state
         self.parent = parent
         self.action = action
+    def __str__(self):
+        return f'{self.state}, {self.parent}, {self.action} END NODE.'
 
 
 class StackFrontier():
