@@ -13,6 +13,9 @@ people = {}
 # Maps movie_ids to a dictionary of: title, year, stars (a set of person_ids)
 movies = {}
 
+# debugging variables
+# seconds = int(0)
+
 
 def load_data(directory):
     """
@@ -63,14 +66,18 @@ def main():
     load_data(directory)
     print("Data loaded.")
 
-    # source = person_id_for_name(input("Name: "))
-    # if source is None:
-    #     sys.exit("Person not found.")
-    # target = person_id_for_name(input("Name: "))
-    # if target is None:
-    #     sys.exit("Person not found.")
-    source = person_id_for_name("Tom Hanks")
+    source = person_id_for_name(input("Name: "))
+    if source is None:
+        sys.exit("Person not found.")
+    target = person_id_for_name(input("Name: "))
+    if target is None:
+        sys.exit("Person not found.")
+    
+    '''
+    # debugging block
+    source = person_id_for_name("Emma Watson")
     target = person_id_for_name("Kevin Bacon")
+    '''
 
     path = shortest_path(source, target)
 
@@ -89,14 +96,19 @@ def main():
 
 def shortest_path(source, target) ->  list:
 
+
     # initialize frontier to just the source position
     start = Node(state=source, parent=None, action=None)
     frontier = QueueFrontier()
     frontier.add(start)
+    
+    '''
+    # debugging block
     print(f"source is {source}")
     print(f"target is {target}")
-    print(f"starting node is {start}")
-
+    # print(frontier.frontier[0].state)
+    '''
+    
     # Initialize an empty explored set
     explored = set()
     
@@ -109,42 +121,61 @@ def shortest_path(source, target) ->  list:
 
         # Choose a node from the frontier
         node = frontier.remove()
-        time.sleep(2)
-        print(node)
-
-
+        # time.sleep(seconds)
+        # print(f"checking node {node}")
 
         # If node is the goal, then we have a solution
         if node.state == target:
-            print('bp1')
             actions = []
             cells = []
             solution = []
             while node.parent is not None:
+                # print(f"this node belongs to chain: {node}")
                 actions.append(node.action)
                 cells.append(node.state)
+                # print(f"node child: {node}")
                 node = node.parent
+                # print(f"node parent: {node}")
             actions.reverse()
             cells.reverse()
+            # print(f"{actions}, {cells}")
             for i in range(len(actions)):
-                print(actions[i])
-                print(cells[i])
-                solution.append((actions[i], cells[i]))
+                solution.append([actions[i], cells[i]])
+            # print(f"The solution is {solution}")
             return solution
-
 
         # Mark node as explored
         explored.add(node.state)
-        print(f"explored is {explored}")
-        print(f"neighbors of node are {neighbors_for_person(node.state)}")
+        # print(f"explored nodes: {explored}")
+        # time.sleep(seconds)
 
+        '''     
         # Add neighbors to frontier
-        for node.action, node.state in neighbors_for_person(node.state):
-            if not frontier.contains_state(node.state) and node.state not in explored:
-                child = Node(state=node.state, parent=node, action=node.action)
+        # for node.action, node.state in neighbors_for_person(node.state):
+        #     # print("bp1")
+        #     if not frontier.contains_state(node.state) and node.state not in explored:
+        #         print(f"parent: {node}")
+        #         child = Node(state=node.state, parent=node, action=node.action)
+        #         frontier.add(child)
+        #         print(f"addeded to the frontier: {child}")
+        # time.sleep(seconds)
+        # Add neighbors to frontier
+        '''
+
+        for action, neighbor_state in neighbors_for_person(node.state):
+            if not frontier.contains_state(neighbor_state) and neighbor_state not in explored:
+                # print(f"parent: {node}")
+                child = Node(state=neighbor_state, parent=node, action=action)
                 frontier.add(child)
+                # print(f"added to the frontier: {child}")
+            # time.sleep(seconds)
 
-
+        '''        
+        # debugging block - Print frontier
+        print("--current frontier--")
+        for i in range(len(frontier.frontier)):
+            print(frontier.frontier[i])
+        '''
 def person_id_for_name(name):
     """
     Returns the IMDB id for a person's name,
@@ -181,6 +212,8 @@ def neighbors_for_person(person_id):
     for movie_id in movie_ids:
         for person_id in movies[movie_id]["stars"]:
             neighbors.add((movie_id, person_id))
+    # print(f"checking neigbors: {neighbors} \n")
+    # time.sleep(seconds)
     return neighbors
 
 
