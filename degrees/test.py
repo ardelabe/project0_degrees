@@ -1,7 +1,8 @@
 import csv
 import sys
+import time
 
-from util import Node, QueueFrontier
+from util import Node, StackFrontier, QueueFrontier
 
 # Maps names to a set of corresponding person_ids
 names = {}
@@ -24,7 +25,7 @@ def load_data(directory):
             people[row["id"]] = {
                 "name": row["name"],
                 "birth": row["birth"],
-                "movies": set(),
+                "movies": set()
             }
             if row["name"].lower() not in names:
                 names[row["name"].lower()] = {row["id"]}
@@ -38,7 +39,7 @@ def load_data(directory):
             movies[row["id"]] = {
                 "title": row["title"],
                 "year": row["year"],
-                "stars": set(),
+                "stars": set()
             }
 
     # Load stars
@@ -62,12 +63,14 @@ def main():
     load_data(directory)
     print("Data loaded.")
 
-    source = person_id_for_name(input("Name: "))
-    if source is None:
-        sys.exit("Person not found.")
-    target = person_id_for_name(input("Name: "))
-    if target is None:
-        sys.exit("Person not found.")
+    # source = person_id_for_name(input("Name: "))
+    # if source is None:
+    #     sys.exit("Person not found.")
+    # target = person_id_for_name(input("Name: "))
+    # if target is None:
+    #     sys.exit("Person not found.")
+    source = person_id_for_name("Emma Watson")
+    target = person_id_for_name("Kevin Bacon")
 
     path = shortest_path(source, target)
 
@@ -84,49 +87,67 @@ def main():
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
-def shortest_path(source, target) -> list:
+def shortest_path(source, target) ->  list:
+
     # initialize frontier to just the source position
     start = Node(state=source, parent=None, action=None)
     frontier = QueueFrontier()
     frontier.add(start)
+    print(f"source is {source}")
+    print(f"target is {target}")
+    # print(f"starting node is {start}")
 
     # Initialize an empty explored set
     explored = set()
     
     # Keep looping until solution found
     while True:
+
+        # If nothing left in frontier, then no path
         if frontier.empty():
             raise Exception("no solution")
 
         # Choose a node from the frontier
         node = frontier.remove()
+        # time.sleep(2)
+        print(node)
+
+
 
         # If node is the goal, then we have a solution
         if node.state == target:
-            actions = []
-            cells = []
+            # print('bp1')
+            person_id_list = []
+            movie_id_list = []
             solution = []
             while node.parent is not None:
-                actions.append(node.action)
-                cells.append(node.state)
+                movie_id_list.append(node.action)
+                person_id_list.append(node.state)
                 node = node.parent
-            actions.reverse()
-            cells.reverse()
-            for i in range(len(actions)):
-                solution.append([actions[i], cells[i]])
+            movie_id_list.reverse()
+            person_id_list.reverse()
+            print(f"{movie_id_list}, {person_id_list}")
+            for i in range(len(movie_id_list)):
+                print(movie_id_list[i])
+                print(movie_id_list[i])
+                solution.append((person_id_list[i], movie_id_list[i]))
+            # solution = solution.reverse()
+            print(f"the solution is: {solution}")
             return solution
+
 
         # Mark node as explored
         explored.add(node.state)
+        # print(f"explored is {explored}")
+        # print(f"neighbors of node are {neighbors_for_person(node.state)}")
 
-        for action, neighbor_state in neighbors_for_person(node.state):
-            if (
-                not frontier.contains_state(neighbor_state)
-                and neighbor_state not in explored
-            ):
-                child = Node(state=neighbor_state, parent=node, action=action)
+        # Add neighbors to frontier
+        for node.action, node.state in neighbors_for_person(node.state):
+            if not frontier.contains_state(node.state) and node.state not in explored:
+                child = Node(state=node.state, parent=node, action=node.action)
                 frontier.add(child)
-
+        # print(frontier.frontier[0].action)
+        # break
 
 def person_id_for_name(name):
     """
