@@ -3,6 +3,8 @@ class Node():
         self.state = state
         self.parent = parent
         self.action = action
+    def __str__(self):
+        return f'person: {self.state}, movie: {self.action}, parent: {self.parent} END.'
 
 
 class StackFrontier():
