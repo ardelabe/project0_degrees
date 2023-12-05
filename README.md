@@ -4,7 +4,7 @@ This repository's code refers to a project from CS50 AI (2023): https://cs50.har
 
 # OVERVIEW
 
-The code takes actors, actresses and the movies they starring as nodes of a graph. Each person-movie is a node. 
+The code takes actors, actresses and the movies they're starring as nodes of a graph. Each person-movie is a node. 
 
 Then it implements that idea where any Holliwood personality is at most 4 steps from Kevin Bacon - where you can input two personalities and the code returns a path that links them between nodes of costarring personalities. 
 
